@@ -14,6 +14,9 @@ var handlebars = require('express3-handlebars')
                 }
                 this._sections[name] = options.fn(this);
                 return null;
+            },
+            static: function (name) {
+                return require('./lib/static').map(name);
             }
         }
     });
