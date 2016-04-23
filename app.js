@@ -4,7 +4,19 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var handlebars = require('express3-handlebars').create({defaultLayout: 'main'});
+var handlebars = require('express3-handlebars')
+    .create({
+        defaultLayout: 'main',
+        helpers: {
+            section: function (name, options) {
+                if (!this._sections) {
+                    this._sections = {};
+                }
+                this._sections[name] = options.fn(this);
+                return null;
+            }
+        }
+    });
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -41,7 +53,7 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        res.render('partials/error', {
+        res.render('page/error', {
             message: err.message,
             error: err
         });
@@ -52,7 +64,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    res.render('partials/error', {
+    res.render('page/error', {
         message: err.message,
         error: {}
     });
